@@ -23,12 +23,17 @@ const hitRate = `-- name: HitRate :execresult
 insert into rate (id, hits, tstamp) values ($1, 0, now())
 on conflict(id) do 
 UPDATE SET hits = CASE 
-    WHEN rate.hits < 50 THEN rate.hits + 1
+    WHEN rate.hits < $2 THEN rate.hits + 1
     ELSE rate.hits
   END
 returning id, hits, tstamp
 `
 
-func (q *Queries) HitRate(ctx context.Context, id int32) (sql.Result, error) {
-	return q.db.ExecContext(ctx, hitRate, id)
+type HitRateParams struct {
+	ID   int32
+	Hits sql.NullInt16
+}
+
+func (q *Queries) HitRate(ctx context.Context, arg HitRateParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, hitRate, arg.ID, arg.Hits)
 }
