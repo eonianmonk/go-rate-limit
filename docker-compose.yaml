@@ -1,0 +1,14 @@
+version: "3.8"
+
+# This is a docker-compose file for development purposes only.
+services:
+  postgres-db:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: "rate"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
