@@ -1,0 +1,6 @@
+svc: 
+  addr: 8080
+
+db:
+  url: "postgres://postgres:postgres@localhost:5432/rate?sslmode=disable"
+  type: "postgres"
