@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"fmt"
@@ -7,6 +7,8 @@ import (
 	"github.com/eonianmonk/go-rate-limit/assets"
 	"github.com/eonianmonk/go-rate-limit/backend/config"
 	migrate "github.com/rubenv/sql-migrate"
+
+	_ "github.com/lib/pq"
 )
 
 func MigrateUp(cfg config.Config) error {

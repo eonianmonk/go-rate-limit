@@ -12,6 +12,7 @@ require (
 	github.com/google/uuid v1.3.1 // indirect
 	github.com/kkyr/fig v0.3.2 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
+	github.com/lib/pq v1.10.9 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect

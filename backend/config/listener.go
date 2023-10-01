@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"net"
 	"sync"
 
@@ -23,11 +24,14 @@ type listener struct {
 
 func (l *listener) Listen() net.Listener {
 	l.action.Do(func() {
-		cfg := ListenerConfig{}
-		err := fig.Load(cfg, l.file)
+		lcfg := struct {
+			cfg ListenerConfig `fig:"svc"`
+		}{}
+		err := fig.Load(&lcfg, l.file)
 		if err != nil {
-			panic(err)
+			panic(fmt.Errorf("failed to read listener config: %s", err.Error()))
 		}
+		cfg := &lcfg.cfg
 		l.ln, err = net.Listen("tcp", cfg.Address)
 		if err != nil {
 			panic(err)
