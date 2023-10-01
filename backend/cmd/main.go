@@ -4,6 +4,7 @@ import (
 	logger "log"
 
 	"github.com/eonianmonk/go-rate-limit/backend/config"
+	"github.com/eonianmonk/go-rate-limit/backend/http"
 	"github.com/kkyr/fig"
 	"github.com/pkg/errors"
 )
@@ -27,7 +28,7 @@ func Run(args []string) {
 	case migrateUpCmd.FullCommand():
 		MigrateUp(cfg)
 	case runCmd.FullCommand():
-		panic("idk")
+		http.Run(cfg)
 	default:
 		log.Fatalf("Unknown cmd :(")
 	}
