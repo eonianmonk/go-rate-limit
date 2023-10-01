@@ -13,6 +13,9 @@ type Listener interface {
 }
 
 type ListenerConfig struct {
+	Fields ListenerFields `fig:"svc"`
+}
+type ListenerFields struct {
 	Address string `fig:"addr" default:":8000"`
 }
 
@@ -24,14 +27,12 @@ type listener struct {
 
 func (l *listener) Listen() net.Listener {
 	l.action.Do(func() {
-		lcfg := struct {
-			cfg ListenerConfig `fig:"svc"`
-		}{}
+		lcfg := ListenerConfig{}
 		err := fig.Load(&lcfg, l.file)
 		if err != nil {
 			panic(fmt.Errorf("failed to read listener config: %s", err.Error()))
 		}
-		cfg := &lcfg.cfg
+		cfg := &lcfg.Fields
 		l.ln, err = net.Listen("tcp", cfg.Address)
 		if err != nil {
 			panic(err)
