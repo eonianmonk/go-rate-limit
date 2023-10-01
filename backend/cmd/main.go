@@ -21,7 +21,7 @@ func Run(args []string) {
 		log.Fatal(errors.Wrap(err, "Failed to parse cli command"))
 	}
 
-	cfg := config.New(fig.File(*configName))
+	cfg := config.New(fig.File(*configName), rateLimit)
 
 	switch cmd {
 	case migrateUpCmd.FullCommand():

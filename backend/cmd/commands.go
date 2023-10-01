@@ -11,4 +11,5 @@ var (
 	migrateUpCmd = migrateCmd.Command("up", "migrate up cmd")
 	// flags
 	configName = app.Flag("cfg", "config file name").Default("config.yaml").String()
+	rateLimit  = app.Flag("max-rate", "rate limit").Default("50").Int16()
 )
