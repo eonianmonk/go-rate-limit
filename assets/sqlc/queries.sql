@@ -1,4 +1,4 @@
--- name: HitRate :execresult
+-- name: HitRate :one
 insert into rate (id, hits, tstamp) values ($1, 0, now())
 on conflict(id) do 
 UPDATE SET hits = CASE 

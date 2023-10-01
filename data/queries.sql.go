@@ -19,7 +19,7 @@ func (q *Queries) DeleteOld(ctx context.Context) error {
 	return err
 }
 
-const hitRate = `-- name: HitRate :execresult
+const hitRate = `-- name: HitRate :one
 insert into rate (id, hits, tstamp) values ($1, 0, now())
 on conflict(id) do 
 UPDATE SET hits = CASE 
@@ -34,6 +34,9 @@ type HitRateParams struct {
 	Hits sql.NullInt16
 }
 
-func (q *Queries) HitRate(ctx context.Context, arg HitRateParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, hitRate, arg.ID, arg.Hits)
+func (q *Queries) HitRate(ctx context.Context, arg HitRateParams) (Rate, error) {
+	row := q.db.QueryRowContext(ctx, hitRate, arg.ID, arg.Hits)
+	var i Rate
+	err := row.Scan(&i.ID, &i.Hits, &i.Tstamp)
+	return i, err
 }
