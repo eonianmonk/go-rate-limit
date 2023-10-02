@@ -10,4 +10,5 @@ func SetupRoutes(app *fiber.App) {
 	v1 := api.Group("/v1")
 
 	v1.Get("/rate", handlers.GetRate)
+
 }

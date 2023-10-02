@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/eonianmonk/go-rate-limit/backend/config"
-	http_context "github.com/eonianmonk/go-rate-limit/backend/http/context"
+	mw "github.com/eonianmonk/go-rate-limit/backend/http/middleware"
 	"github.com/eonianmonk/go-rate-limit/data"
 	"github.com/gofiber/fiber/v2"
 )
@@ -31,8 +31,8 @@ func startFiber(cfg config.Config) Task {
 
 	app := fiber.New()
 	app.Use(func(c *fiber.Ctx) error {
-		http_context.SetLocal[*data.Queries](c, http_context.DbKey, q)
-		http_context.SetLocal[*int16](c, http_context.LimitKey, cfg.Limit())
+		mw.SetLocal[*data.Queries](c, mw.DbKey, q)
+		mw.SetLocal[*int16](c, mw.LimitKey, cfg.Limit())
 		return c.Next()
 	})
 	SetupRoutes(app)
@@ -41,11 +41,6 @@ func startFiber(cfg config.Config) Task {
 		err := app.Listener(cfg.Listen())
 		if err != nil {
 			errc <- fmt.Errorf("fiber listener failed: %s", err.Error())
-		}
-		<-ctx.Done()
-		err = app.Shutdown()
-		if err != nil {
-			errc <- err
 		}
 	}
 }

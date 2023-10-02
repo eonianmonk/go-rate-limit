@@ -1,9 +1,8 @@
 -- +migrate Up
 create table if not exists rate (
     id integer primary key,
-    hits smallint,
-    tstamp integer
+    hits smallint NOT NULL,
+    tstamp timestamp NOT NULL DEFAULT NOW()
 );
-
 -- +migrate Down
 drop table rate;

@@ -5,11 +5,11 @@
 package data
 
 import (
-	"database/sql"
+	"time"
 )
 
 type Rate struct {
 	ID     int32
-	Hits   sql.NullInt16
-	Tstamp sql.NullInt32
+	Hits   int16
+	Tstamp time.Time
 }
