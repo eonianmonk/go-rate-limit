@@ -30,12 +30,12 @@ func startFiber(cfg config.Config) Task {
 	q := data.New(cfg.DB())
 
 	app := fiber.New()
-	SetupRoutes(app)
 	app.Use(func(c *fiber.Ctx) error {
 		http_context.SetLocal[*data.Queries](c, http_context.DbKey, q)
 		http_context.SetLocal[*int16](c, http_context.LimitKey, cfg.Limit())
-		return nil
+		return c.Next()
 	})
+	SetupRoutes(app)
 
 	return func(ctx context.Context, errc chan error) {
 		err := app.Listener(cfg.Listen())
@@ -55,11 +55,17 @@ func startPurgeLoop(cfg config.Config) Task {
 
 	return func(ctx context.Context, errc chan error) {
 		for {
-			time.Sleep(time.Minute)
-			err := q.DeleteOld(ctx)
-			if err != nil {
-				errc <- fmt.Errorf("old rates clearing failed: %s", err.Error())
+			select {
+			case <-time.After(time.Minute):
+				err := q.DeleteOld(ctx)
+				if err != nil {
+					errc <- fmt.Errorf("old rates clearing failed: %s", err.Error())
+					return
+				}
+			case <-ctx.Done():
+				return
 			}
+
 		}
 	}
 }
