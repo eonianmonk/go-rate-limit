@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	logger "log"
 	"os"
 
@@ -23,12 +24,12 @@ func Run(args []string) {
 		log.Fatal(errors.Wrap(err, "Failed to parse cli command"))
 	}
 	cfg := config.New(fig.File(*configName), rateLimit)
-
+	ctx := context.Background()
 	switch cmd {
 	case migrateUpCmd.FullCommand():
 		MigrateUp(cfg)
 	case runCmd.FullCommand():
-		http.Run(cfg)
+		http.Run(cfg, ctx)
 	default:
 		log.Fatalf("Unknown cmd :(")
 	}
