@@ -7,7 +7,6 @@ package data
 
 import (
 	"context"
-	"database/sql"
 )
 
 const deleteOld = `-- name: DeleteOld :exec
@@ -19,16 +18,24 @@ func (q *Queries) DeleteOld(ctx context.Context) error {
 	return err
 }
 
-const hitRate = `-- name: HitRate :execresult
+const hitRate = `-- name: HitRate :one
 insert into rate (id, hits, tstamp) values ($1, 0, now())
-on conflict(id) do 
-UPDATE SET hits = CASE 
-    WHEN rate.hits < 50 THEN rate.hits + 1
+on conflict(id) do UPDATE 
+SET hits = CASE 
+    WHEN rate.hits < $2 THEN rate.hits + 1
     ELSE rate.hits
   END
-returning id, hits, tstamp
+returning hits
 `
 
-func (q *Queries) HitRate(ctx context.Context, id int32) (sql.Result, error) {
-	return q.db.ExecContext(ctx, hitRate, id)
+type HitRateParams struct {
+	ID   int32
+	Hits int16
+}
+
+func (q *Queries) HitRate(ctx context.Context, arg HitRateParams) (int16, error) {
+	row := q.db.QueryRowContext(ctx, hitRate, arg.ID, arg.Hits)
+	var hits int16
+	err := row.Scan(&hits)
+	return hits, err
 }
