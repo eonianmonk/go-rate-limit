@@ -5,5 +5,5 @@ serve:
 	./ratel run
 
 migrate-up:
-	ratel migrate up
+	./ratel migrate up
 	
